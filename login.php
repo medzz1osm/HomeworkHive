@@ -1,3 +1,4 @@
+<h1> HEllo </h1>
 <?php
 session_start();
 include "db_conn.php";
@@ -11,7 +12,6 @@ if(isset($_POST['uname']) && isset($_POST['password'])) {
         return data;
     }
 }
-
 $uname = validate($_POST['uname']);
 $pass = validate($_POST['password']);
 
@@ -46,3 +46,4 @@ else {
     header("Location: index.php");
     exit();
 }
+
