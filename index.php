@@ -41,48 +41,21 @@ button:hover {
   </style>
   </head>
   <body>
-  <form id="signInForm">
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
-        <button type="submit">Sign in</button>
-        <button type="button" id="signinButton">Login</button>
-    </form>
+  <form action="login.php" method="post>
+  <h2> login </h2>
+  <?php if(isset($_GET['error'])) { ?>
+    <p class="error"><?php echo $_GET['error']; ?></p>
+    <?php } ?>
+    <label> Username</label>
+    <input type="text" name="uname" placeholder="Username"><br>
+    <label>Password</label>
+    <inpit type="password" name="password" placeholder="Password"><br>
+
+    <button tupe="submit">LOgin</button>
+
+
 </form>
 
-     
-    <script>
-      document.getElementById('loginButton').addEventListener('click', function() {
-            window.location.href = 'login.php';
-        });
-  document.getElementById('signInForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    if (username !== "" && password !== "") {
-        var passwordPattern = new RegExp('(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}');
-        if (!passwordPattern.test(password)) {
-            alert('Invalid password format');
-            return;
-        }
-
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hash = await window.crypto.subtle.digest('SHA-256', data);
-        
-        let hashArray = Array.from(new Uint8Array(hash));
-        let hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        console.log(`Username: ${username}, Password: ${hashedPassword}`);
-
-// Redirect to home.html
-window.location.href = "home.php";
-} else {
-alert('Invalid username or password');
-}
-});
-        </script>
   </body>
 </html>
 
