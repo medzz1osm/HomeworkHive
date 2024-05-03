@@ -2,7 +2,6 @@
 session_start();
 
 if(isset($_SESSION['id']) && isset($_SESSION['username'])) {
-    print_r($_SESSION['username']);
     ?>
     <!DOCTYPE html>
     <html lang="en">

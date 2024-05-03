@@ -1,3 +1,43 @@
+<?php
+include "db_conn.php";
+
+if (isset($_POST['uname']) && isset($_POST['password'])) {
+
+    function validate($data){
+       $data = trim($data);
+       $data = stripslashes($data);
+       $data = htmlspecialchars($data);
+       return $data;
+    }
+
+    $uname = validate($_POST['uname']);
+    $pass = validate($_POST['password']);
+
+    if (empty($uname)) {
+        header("Location: index.php?error=Username is required");
+        exit();
+    } else if(empty($pass)){
+        header("Location: index.php?error=Password is required");
+        exit();
+    } else {
+        // Hash the password
+        $pass = password_hash($pass, PASSWORD_DEFAULT);
+
+        // Insert the user into the database
+        $sql = "INSERT INTO users (username, password) VALUES ('$uname', '$pass')";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            echo "User registered successfully!";
+            exit();
+        } else {
+            header("Location: index.php?error=Something went wrong, please try again");
+            exit();
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="<?php echo $language; ?>">
   <head>
@@ -40,42 +80,12 @@
     </style>
   </head>
   <body>
-    <form id="signInForm" action="login.php" method="post">
-      <h2> login </h2>
-      <?php if(isset($_GET['error'])) { ?>
-        <p class="error"><?php echo $_GET['error']; ?></p>
-      <?php } ?>
-      <input type="text" id="username" name="uname" placeholder="Username" required>
-      <input type="password" id="password" name="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
-      <button type="submit">Login</button>
+  <form action="signin.php" method="post">
+        <label for="uname">Username:</label><br>
+        <input type="text" id="uname" name="uname" required><br>
+        <label for="pwd">Password:</label><br>
+        <input type="password" id="pwd" name="password" required><br>
+        <input type="submit" value="Sign In">
     </form>
-
-    <script>
-     document.getElementById('signInForm').addEventListener('submit', async function(event) {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    if (username !== "" && password !== "") {
-        var passwordPattern = new RegExp('(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}');
-        if (!passwordPattern.test(password)) {
-            alert('Invalid password format');
-            event.preventDefault();
-            return;
-        }
-
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hash = await window.crypto.subtle.digest('SHA-256', data);
-        
-        let hashArray = Array.from(new Uint8Array(hash));
-        let hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        console.log(`Username: ${username}, Password: ${hashedPassword}`);
-    } else {
-        alert('Invalid username or password');
-        event.preventDefault();
-    }
-});
-    </script>
   </body>
 </html>
